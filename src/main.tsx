@@ -31,6 +31,26 @@ function renderStopButton() {
     return <button onClick={() => stopCountdown()}>STOP</button>;
 }
 
+function renderCountdown(): JSX.IntrinsicElements {
+    return (
+        <div class="countdown">
+            {renderMinutes()}
+            {countDownTime.map((time) => (time !== undefined ? <span>:</span> : null))}
+            {renderSeconds()}
+        </div>
+    );
+}
+
+function renderMinutes(): DataSource<string> {
+    return countDownTime.map((time) => (time !== undefined ? `${Math.floor(time / 60)}`.padStart(2, "0") : null));
+}
+
+function renderSeconds(): DataSource<string> {
+    return countDownTime.map((time) =>
+        time !== undefined ? `${Math.floor(time - Math.floor(time / 60) * 60)}`.padStart(2, "0") : null
+    );
+}
+
 function startCountdown() {
     countDownTime.update(computeOriginalMillis());
 
@@ -51,22 +71,12 @@ function computeOriginalMillis() {
     return Number(originalMinutes.value) * 60 + Number(originalSeconds.value);
 }
 
-function renderMinutes(): DataSource<string> {
-    return countDownTime.map((time) => `${Math.floor(time / 60)}`.padStart(2, "0"));
-}
-
-function renderSeconds(): DataSource<string> {
-    return countDownTime.map((time) => `${Math.floor(time - Math.floor(time / 60) * 60)}`.padStart(2, "0"));
-}
-
 Aurum.attach(
-    <div>
+    <div class="root">
         {renderInputs()}
         {renderStartButton()}
         {renderStopButton()}
-        {renderMinutes()}
-        <span>:</span>
-        {renderSeconds()}
+        {renderCountdown()}
     </div>,
     document.body
 );
