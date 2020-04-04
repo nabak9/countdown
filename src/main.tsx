@@ -1,5 +1,5 @@
 import { Aurum, DataSource, CancellationToken } from "aurumjs";
-import "../scss/example.scss";
+import "../scss/main.scss";
 
 const originalMinutes = new DataSource(undefined);
 const originalSeconds = new DataSource(undefined);
