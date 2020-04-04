@@ -1,2 +1,2 @@
-# countdown
- A simple countdown app
+# Countdown
+A simple countdown app written with [AurumJs](https://aurumjs.org/) .
