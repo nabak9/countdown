@@ -1,25 +1,29 @@
 import { Aurum, DataSource, CancellationToken } from "aurumjs";
 import "../scss/main.scss";
+import { CountdownStatus } from "./countdown_status";
 
 const originalMinutes = new DataSource(undefined);
 const originalSeconds = new DataSource(undefined);
 const countDownTime = new DataSource(undefined);
+const countDownStatus = new DataSource(CountdownStatus.STOPPED);
 
 let cancellationToken: CancellationToken;
 
-function renderInputs() {
-    return (
-        <div>
-            <input
-                initialValue={originalMinutes.value}
-                onChange={(e) => originalMinutes.update((e.target as HTMLInputElement).value)}
-            />
-            :
-            <input
-                initialValue={originalSeconds.value}
-                onChange={(e) => originalSeconds.update((e.target as HTMLInputElement).value)}
-            />
-        </div>
+function renderInputs(): DataSource<JSX.IntrinsicElements> {
+    return countDownStatus.map((status) =>
+        status === CountdownStatus.STOPPED ? (
+            <div>
+                <input
+                    initialValue={originalMinutes.value}
+                    onChange={(e) => originalMinutes.update((e.target as HTMLInputElement).value)}
+                />
+                :
+                <input
+                    initialValue={originalSeconds.value}
+                    onChange={(e) => originalSeconds.update((e.target as HTMLInputElement).value)}
+                />
+            </div>
+        ) : null
     );
 }
 
@@ -52,6 +56,7 @@ function renderSeconds(): DataSource<string> {
 }
 
 function startCountdown() {
+    countDownStatus.update(CountdownStatus.RUNNING);
     countDownTime.update(computeOriginalMillis());
 
     cancellationToken = new CancellationToken();
@@ -64,6 +69,7 @@ function startCountdown() {
 }
 
 function stopCountdown() {
+    countDownStatus.update(CountdownStatus.STOPPED);
     cancellationToken.cancel();
 }
 
