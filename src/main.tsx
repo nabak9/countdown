@@ -31,11 +31,15 @@ function renderInputs(): DataSource<JSX.IntrinsicElements> {
 }
 
 function renderStartButton() {
-    return countDownTime.value !== computeOriginalMillis() && <button onClick={() => startCountdown()}>START</button>;
+    return countDownStatus.map(status =>
+        status !== CountdownStatus.RUNNING ? <button onClick={() => startCountdown()}>START</button> : null
+    );
 }
 
 function renderStopButton() {
-    return <button onClick={() => stopCountdown()}>STOP</button>;
+    return countDownStatus.map(status =>
+        status !== CountdownStatus.STOPPED ? <button onClick={() => stopCountdown()}>STOP</button> : null
+    );
 }
 
 function renderCountdown(): JSX.IntrinsicElements {
