@@ -10,18 +10,18 @@ const countDownStatus = new DataSource(CountdownStatus.STOPPED);
 let cancellationToken: CancellationToken;
 
 function renderInputs(): DataSource<JSX.IntrinsicElements> {
-    return countDownStatus.map((status) =>
+    return countDownStatus.map(status =>
         status === CountdownStatus.STOPPED ? (
             <div class="inputs">
                 <input
                     initialValue={originalMinutes.value}
-                    onChange={(e) => originalMinutes.update((e.target as HTMLInputElement).value)}
+                    onChange={e => originalMinutes.update((e.target as HTMLInputElement).value)}
                     class="minutes-input"
                 />
                 <span class="input-unit">min</span>
                 <input
                     initialValue={originalSeconds.value}
-                    onChange={(e) => originalSeconds.update((e.target as HTMLInputElement).value)}
+                    onChange={e => originalSeconds.update((e.target as HTMLInputElement).value)}
                     class="seconds-input"
                 />
                 <span class="input-unit">s</span>
@@ -46,18 +46,18 @@ function renderCountdown(): JSX.IntrinsicElements {
     return (
         <div class="countdown">
             {renderMinutes()}
-            {countDownTime.map((time) => (time !== undefined ? <span>:</span> : null))}
+            {countDownTime.map(time => (time !== undefined ? <span>:</span> : null))}
             {renderSeconds()}
         </div>
     );
 }
 
 function renderMinutes(): DataSource<string> {
-    return countDownTime.map((time) => (time !== undefined ? `${Math.floor(time / 60)}`.padStart(2, "0") : null));
+    return countDownTime.map(time => (time !== undefined ? `${Math.floor(time / 60)}`.padStart(2, "0") : null));
 }
 
 function renderSeconds(): DataSource<string> {
-    return countDownTime.map((time) =>
+    return countDownTime.map(time =>
         time !== undefined ? `${Math.floor(time - Math.floor(time / 60) * 60)}`.padStart(2, "0") : null
     );
 }
