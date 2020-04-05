@@ -17,6 +17,21 @@ html {
             align-items: center;
             justify-content: center;
 
+            .inputs {
+                .minutes-input,
+                .seconds-input {
+                    box-sizing: border-box;
+                    width: 19px;
+                    height: 19px;
+                }
+
+                .input-unit {
+                    color: #e8e3e3;
+                    margin-right: 8px;
+                    margin-left: 4px;
+                }
+            }
+
             .countdown {
                 color: #e8e3e3;
                 font-size: 160px;

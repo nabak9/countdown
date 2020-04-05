@@ -12,16 +12,19 @@ let cancellationToken: CancellationToken;
 function renderInputs(): DataSource<JSX.IntrinsicElements> {
     return countDownStatus.map((status) =>
         status === CountdownStatus.STOPPED ? (
-            <div>
+            <div class="inputs">
                 <input
                     initialValue={originalMinutes.value}
                     onChange={(e) => originalMinutes.update((e.target as HTMLInputElement).value)}
+                    class="minutes-input"
                 />
-                :
+                <span class="input-unit">min</span>
                 <input
                     initialValue={originalSeconds.value}
                     onChange={(e) => originalSeconds.update((e.target as HTMLInputElement).value)}
+                    class="seconds-input"
                 />
+                <span class="input-unit">s</span>
             </div>
         ) : null
     );
