@@ -2,8 +2,8 @@ import { Aurum, DataSource, CancellationToken } from "aurumjs";
 import "../scss/main.scss";
 import { CountdownStatus } from "./countdown_status";
 
-const originalMinutes = new DataSource(undefined);
-const originalSeconds = new DataSource(undefined);
+const originalMinutes = new DataSource("00");
+const originalSeconds = new DataSource("00");
 const countDownTime = new DataSource(undefined);
 const countDownStatus = new DataSource(CountdownStatus.STOPPED);
 
