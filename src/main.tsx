@@ -73,6 +73,7 @@ function startCountdown() {
     cancellationToken.setInterval(() => {
         countDownTime.update(countDownTime.value - 1);
         if (countDownTime.value === 0) {
+            countDownStatus.update(CountdownStatus.STOPPED);
             cancellationToken.cancel();
         }
     }, 1000);
