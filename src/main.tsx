@@ -45,14 +45,14 @@ function renderStopButton() {
     );
 }
 
-function renderCountdown(): JSX.IntrinsicElements {
-    return (
+function renderCountdown() {
+    return countDownStatus.map(status => status !== CountdownStatus.STOPPED ? (
         <div class="countdown">
             {renderMinutes()}
             {countDownTime.map(time => (time !== undefined ? <span>:</span> : null))}
             {renderSeconds()}
         </div>
-    );
+    ) : null);
 }
 
 function renderMinutes(): DataSource<string> {
