@@ -15,16 +15,14 @@ function renderInputs(): DataSource<JSX.IntrinsicElements> {
             <div class="inputs">
                 <input
                     type="text"
-                    initialValue={originalMinutes.value}
-                    inputValueSource={originalMinutes}
+                    value={originalMinutes}
                     onInput={e => handleMinutesChange((e.target as HTMLInputElement).value)}
                     class="minutes-input"
                 />
                 <span class="input-unit">min</span>
                 <input
                     type="text"
-                    initialValue={originalSeconds.value}
-                    inputValueSource={originalSeconds}
+                    value={originalSeconds}
                     onInput={e => handleSecondsChange((e.target as HTMLInputElement).value)}
                     class="seconds-input"
                 />
