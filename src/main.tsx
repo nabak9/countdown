@@ -14,14 +14,18 @@ function renderInputs(): DataSource<JSX.IntrinsicElements> {
         status === CountdownStatus.STOPPED ? (
             <div class="inputs">
                 <input
+                    type="text"
                     initialValue={originalMinutes.value}
-                    onChange={e => originalMinutes.update((e.target as HTMLInputElement).value)}
+                    inputValueSource={originalMinutes}
+                    onInput={e => handleMinutesChange((e.target as HTMLInputElement).value)}
                     class="minutes-input"
                 />
                 <span class="input-unit">min</span>
                 <input
+                    type="text"
                     initialValue={originalSeconds.value}
-                    onChange={e => originalSeconds.update((e.target as HTMLInputElement).value)}
+                    inputValueSource={originalSeconds}
+                    onInput={e => handleSecondsChange((e.target as HTMLInputElement).value)}
                     class="seconds-input"
                 />
                 <span class="input-unit">s</span>
@@ -82,6 +86,22 @@ function stopCountdown() {
 
 function computeOriginalMillis() {
     return Number(originalMinutes.value) * 60 + Number(originalSeconds.value);
+}
+
+function handleMinutesChange(value: string): void {
+    let minutes: string = value;
+    if (Number(minutes) > 23) {
+        minutes = '23';
+    }
+    originalMinutes.update(minutes);
+}
+
+function handleSecondsChange(value: string): void {
+    let seconds: string = value;
+    if (Number(seconds) > 59) {
+        seconds = '59';
+    }
+    originalSeconds.update(seconds);
 }
 
 Aurum.attach(
