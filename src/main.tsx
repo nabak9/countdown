@@ -33,8 +33,9 @@ function renderInputs(): DataSource<JSX.IntrinsicElements> {
 }
 
 function renderStartButton() {
-    return countDownStatus.map(status =>
-        status !== CountdownStatus.RUNNING ? <button onClick={() => startCountdown()}>START</button> : null
+    const startButtonSources = new DataSource().combine([originalMinutes, originalSeconds, countDownStatus]);
+    return startButtonSources.map(status =>
+        status !== CountdownStatus.RUNNING ? <button onClick={() => startCountdown()} disabled={computeOriginalMillis() === 0}>START</button> : null
     );
 }
 
