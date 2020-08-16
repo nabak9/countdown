@@ -46,7 +46,7 @@ export function ProgressCircle(props: ProgressCircleProps): Renderable {
             context.beginPath();
             context.strokeStyle = '#6eeeee';
             context.lineWidth = lineWidth;
-            context.arc(x, y, radius, radEnd, computeRadAngle(progressDegrees));
+            context.arc(x, y, radius, radStart, computeRadAngle(progressDegrees));
             context.stroke();
 
             const minutes = `${Math.floor(remainingSeconds / 60)}`.padStart(2, "0");
