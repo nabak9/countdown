@@ -1,4 +1,4 @@
-import { Aurum, CancellationToken, DataSource } from 'aurumjs';
+import { Aurum, CancellationToken, DataSource, Renderable } from 'aurumjs';
 import '../scss/main.scss';
 import { CountdownStatus } from './countdown_status';
 import { ProgressCircle } from './progress_circle/progress_circle';
@@ -10,7 +10,7 @@ const countDownStatus = new DataSource(CountdownStatus.STOPPED);
 
 let cancellationToken: CancellationToken;
 
-function renderInputs(): DataSource<JSX.IntrinsicElements> {
+function renderInputs(): DataSource<Renderable> {
     return countDownStatus.map(status =>
         status === CountdownStatus.STOPPED ? (
             <div class="inputs">
@@ -33,20 +33,26 @@ function renderInputs(): DataSource<JSX.IntrinsicElements> {
     );
 }
 
-function renderStartButton() {
-    const startButtonSources = new DataSource().combine([originalMinutes, originalSeconds, countDownStatus]);
-    return startButtonSources.map(status =>
-        status !== CountdownStatus.RUNNING ? <button onClick={() => startCountdown()} disabled={computeOriginalSeconds() === 0}>START</button> : null
+function renderStartButton(): DataSource<Renderable> {
+    return countDownStatus.map(status =>
+        status !== CountdownStatus.RUNNING
+            ? <button onClick={() => startCountdown()}
+                disabled={DataSource.fromMultipleSources([originalMinutes, originalSeconds])
+                    .map(() => computeOriginalSeconds() === 0)
+                    .withInitial(computeOriginalSeconds() === 0)}>
+                START
+            </button>
+            : null
     );
 }
 
-function renderStopButton() {
+function renderStopButton(): DataSource<Renderable> {
     return countDownStatus.map(status =>
         status !== CountdownStatus.STOPPED ? <button onClick={() => stopCountdown()}>STOP</button> : null
     );
 }
 
-function renderCountdown() {
+function renderCountdown(): DataSource<Renderable> {
     return countDownStatus.map(status => status !== CountdownStatus.STOPPED ? (
         <div>
             {renderProgressCircle()}
@@ -54,7 +60,7 @@ function renderCountdown() {
     ) : null);
 }
 
-function renderProgressCircle(): DataSource<JSX.IntrinsicElements> {
+function renderProgressCircle(): DataSource<Renderable> {
     return <ProgressCircle totalTime={computeOriginalSeconds()} status={countDownStatus} />;
 }
 

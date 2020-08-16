@@ -1,5 +1,5 @@
 export enum CountdownStatus {
-    STOPPED,
-    PAUSED,
-    RUNNING,
+    STOPPED = 'STOPPED',
+    PAUSED = 'PAUSED',
+    RUNNING = 'RUNNING',
 }

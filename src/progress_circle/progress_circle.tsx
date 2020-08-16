@@ -1,17 +1,15 @@
-import { Aurum, CancellationToken } from 'aurumjs';
-import { ProgressCircleProps } from './progress_circle_props';
+import { Aurum, CancellationToken, Renderable } from 'aurumjs';
 import { CountdownStatus } from '../countdown_status';
+import { ProgressCircleProps } from './progress_circle_props';
 
-const PROGRESS_CIRCLE_ID = "progress-circle";
-export function ProgressCircle(props: ProgressCircleProps): JSX.IntrinsicElements {
+export function ProgressCircle(props: ProgressCircleProps): Renderable {
 
-    return <canvas id={PROGRESS_CIRCLE_ID} width="250" height="250" onAttach={() => initCanvas()}></canvas>;
+    return <canvas width="250" height="250" onAttach={(canvasElement) => initCanvas(canvasElement)}></canvas>;
 
-    function initCanvas() {
+    function initCanvas(canvasElem: HTMLCanvasElement) {
         const cancellationToken: CancellationToken = new CancellationToken();
         props.status.listen(status => status === CountdownStatus.STOPPED && cancellationToken.cancel());
 
-        const canvasElem: HTMLCanvasElement = document.getElementById(PROGRESS_CIRCLE_ID) as HTMLCanvasElement;
         const context = canvasElem.getContext('2d');
         context.lineCap = 'round';
 
