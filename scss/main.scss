@@ -20,10 +20,12 @@ html {
             .inputs {
                 .minutes-input,
                 .seconds-input {
-                    box-sizing: border-box;
-                    width: 19px;
-                    height: 19px;
+                    box-sizing: border-box;                    
+                    width: 30px;
+                    height: 30px;
+                    text-align: center;
                     padding: 0;
+                    border-radius: 50%;
                 }
 
                 .input-unit {
