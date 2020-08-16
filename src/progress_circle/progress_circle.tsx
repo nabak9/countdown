@@ -26,11 +26,7 @@ export function ProgressCircle(props: ProgressCircleProps): Renderable {
         cancellationToken.animationLoop((time: number) => {
             context.clearRect(0, 0, canvasElem.width, canvasElem.height);
 
-            context.beginPath();
-            context.arc(x, y, radius, radStart, radEnd);
-            context.strokeStyle = '#b1b1b1';
-            context.lineWidth = lineWidth;
-            context.stroke();
+            drawCircle(radEnd, '#b1b1b1');
 
             if (startTime === undefined) {
                 startTime = time;
@@ -42,26 +38,32 @@ export function ProgressCircle(props: ProgressCircleProps): Renderable {
             const remainingSeconds = Math.max(props.totalTime - elapsedSeconds + 1, 0);
 
             const progressDegrees = Math.min(elapsedSeconds * degreesPerSecond, 360);
-
-            context.beginPath();
-            context.strokeStyle = '#6eeeee';
-            context.lineWidth = lineWidth;
-            context.arc(x, y, radius, radStart, computeRadAngle(progressDegrees));
-            context.stroke();
+            drawCircle(computeRadAngle(progressDegrees), '#6eeeee');
 
             const minutes = `${Math.floor(remainingSeconds / 60)}`.padStart(2, "0");
             const seconds = `${Math.floor(remainingSeconds - Math.floor(remainingSeconds / 60) * 60)}`.padStart(2, "0");
-
-            context.fillStyle = '#e8e3e3';
-            context.textAlign = 'center';
-            context.textBaseline = 'middle';
-            context.font = '60px Arial, Helvetica, sans-serif';
-            context.fillText(`${minutes}:${seconds}`, x, y);
+            drawProgressLabel(minutes, seconds);
 
             if (progressDegrees === 360) {
                 cancellationToken.cancel();
             }
         });
+
+        function drawProgressLabel(minutes: string, seconds: string): void {
+            context.fillStyle = '#e8e3e3';
+            context.textAlign = 'center';
+            context.textBaseline = 'middle';
+            context.font = '60px Arial, Helvetica, sans-serif';
+            context.fillText(`${minutes}:${seconds}`, x, y);
+        }
+
+        function drawCircle(endAngle: number, color: string): void {
+            context.beginPath();
+            context.arc(x, y, radius, radStart, endAngle);
+            context.strokeStyle = color;
+            context.lineWidth = lineWidth;
+            context.stroke();
+        }
     };
 
     function computeRadAngle(degrees: number): number {
