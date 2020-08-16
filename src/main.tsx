@@ -1,10 +1,11 @@
-import { Aurum, DataSource, CancellationToken } from "aurumjs";
-import "../scss/main.scss";
-import { CountdownStatus } from "./countdown_status";
+import { Aurum, CancellationToken, DataSource } from 'aurumjs';
+import '../scss/main.scss';
+import { CountdownStatus } from './countdown_status';
+import { ProgressCircle } from './progress_circle/progress_circle';
 
 const originalMinutes = new DataSource("00");
 const originalSeconds = new DataSource("00");
-const countDownTime = new DataSource(undefined);
+const countDownTime = new DataSource<number>(undefined);
 const countDownStatus = new DataSource(CountdownStatus.STOPPED);
 
 let cancellationToken: CancellationToken;
@@ -35,7 +36,7 @@ function renderInputs(): DataSource<JSX.IntrinsicElements> {
 function renderStartButton() {
     const startButtonSources = new DataSource().combine([originalMinutes, originalSeconds, countDownStatus]);
     return startButtonSources.map(status =>
-        status !== CountdownStatus.RUNNING ? <button onClick={() => startCountdown()} disabled={computeOriginalMillis() === 0}>START</button> : null
+        status !== CountdownStatus.RUNNING ? <button onClick={() => startCountdown()} disabled={computeOriginalSeconds() === 0}>START</button> : null
     );
 }
 
@@ -47,36 +48,39 @@ function renderStopButton() {
 
 function renderCountdown() {
     return countDownStatus.map(status => status !== CountdownStatus.STOPPED ? (
-        <div class="countdown">
-            {renderMinutes()}
-            {countDownTime.map(time => (time !== undefined ? <span>:</span> : null))}
-            {renderSeconds()}
+        <div>
+            {renderProgressCircle()}
         </div>
     ) : null);
 }
 
-function renderMinutes(): DataSource<string> {
-    return countDownTime.map(time => (time !== undefined ? `${Math.floor(time / 60)}`.padStart(2, "0") : null));
-}
-
-function renderSeconds(): DataSource<string> {
-    return countDownTime.map(time =>
-        time !== undefined ? `${Math.floor(time - Math.floor(time / 60) * 60)}`.padStart(2, "0") : null
-    );
+function renderProgressCircle(): DataSource<JSX.IntrinsicElements> {
+    return <ProgressCircle totalTime={computeOriginalSeconds()} status={countDownStatus} />;
 }
 
 function startCountdown() {
     countDownStatus.update(CountdownStatus.RUNNING);
-    countDownTime.update(computeOriginalMillis());
 
     cancellationToken = new CancellationToken();
-    cancellationToken.setInterval(() => {
-        countDownTime.update(countDownTime.value - 1);
-        if (countDownTime.value === 0) {
+
+    let startTime: number;
+    const totalTime = computeOriginalSeconds();
+    cancellationToken.animationLoop(tickTime);
+
+    function tickTime(time: number): void {
+        if (startTime === undefined) {
+            startTime = time;
+        }
+
+        const elapsedTime = time - startTime;
+        const elapsedSeconds = elapsedTime / 1000;
+        const remainingSeconds = Math.max(totalTime - elapsedSeconds + 1, 0);
+
+        if (remainingSeconds === 0) {
             countDownStatus.update(CountdownStatus.STOPPED);
             cancellationToken.cancel();
         }
-    }, 1000);
+    }
 }
 
 function stopCountdown() {
@@ -84,7 +88,7 @@ function stopCountdown() {
     cancellationToken.cancel();
 }
 
-function computeOriginalMillis() {
+function computeOriginalSeconds() {
     return Number(originalMinutes.value) * 60 + Number(originalSeconds.value);
 }
 
