@@ -118,8 +118,8 @@ Aurum.attach(
     <div class="root">
         {renderInputs()}
         {renderStartButton()}
-        {renderStopButton()}
         {renderCountdown()}
+        {renderStopButton()}
     </div>,
     document.body
 );
