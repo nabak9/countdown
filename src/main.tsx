@@ -5,7 +5,6 @@ import { ProgressCircle } from './progress_circle/progress_circle';
 
 const originalMinutes = new DataSource("00");
 const originalSeconds = new DataSource("00");
-const countDownTime = new DataSource<number>(undefined);
 const countDownStatus = new DataSource(CountdownStatus.STOPPED);
 
 let cancellationToken: CancellationToken;
