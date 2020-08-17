@@ -1,6 +1,7 @@
 import { Aurum, CancellationToken, DataSource, Renderable } from 'aurumjs';
 import '../scss/main.scss';
 import { CountdownStatus } from './countdown_status';
+import { PageFooter } from './page_footer/page_footer';
 import { ProgressCircle } from './progress_circle/progress_circle';
 
 const originalMinutes = new DataSource("00");
@@ -61,6 +62,10 @@ function renderCountdown(): DataSource<Renderable> {
 
 function renderProgressCircle(): DataSource<Renderable> {
     return <ProgressCircle totalTime={computeOriginalSeconds()} status={countDownStatus} />;
+}
+
+function renderFooter(): DataSource<Renderable> {
+    return <PageFooter />;
 }
 
 function startCountdown() {
@@ -126,6 +131,7 @@ Aurum.attach(
         {renderStartButton()}
         {renderCountdown()}
         {renderStopButton()}
+        {renderFooter()}
     </div>,
     document.body
 );
