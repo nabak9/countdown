@@ -99,19 +99,21 @@ function computeOriginalSeconds() {
 }
 
 function handleMinutesChange(value: string): void {
-    let minutes: string = value;
-    if (Number(minutes) > 23) {
-        minutes = '23';
-    }
+    let minutes: string = normalizeMinutesOrSeconds(value);
     originalMinutes.update(minutes);
 }
 
 function handleSecondsChange(value: string): void {
-    let seconds: string = value;
-    if (Number(seconds) > 59) {
-        seconds = '59';
-    }
+    let seconds: string = normalizeMinutesOrSeconds(value);
     originalSeconds.update(seconds);
+}
+
+function normalizeMinutesOrSeconds(value: string): string {
+    let normalizedValue: string = value;
+    if (Number(normalizedValue) > 59) {
+        normalizedValue = '59';
+    }
+    return normalizedValue;
 }
 
 Aurum.attach(
