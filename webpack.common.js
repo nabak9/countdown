@@ -9,7 +9,8 @@ module.exports = {
     plugins: [
         new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({
-            title: 'Production',
+            title: 'Countdown App',
+            template: 'index.html'
         }),
     ],
     module: {
