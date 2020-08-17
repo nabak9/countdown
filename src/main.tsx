@@ -109,8 +109,13 @@ function handleSecondsChange(value: string): void {
 
 function normalizeMinutesOrSeconds(value: string): string {
     let normalizedValue: string = value;
-    if (Number(normalizedValue) > 59) {
-        normalizedValue = '59';
+    const oneTwoDigitsFound = new RegExp(/^\d{1,2}$/).test(normalizedValue);
+    if (!oneTwoDigitsFound) {
+        normalizedValue = '00';
+    } else if (new RegExp(/^\d{2}$/).test(normalizedValue)) {
+        if (!new RegExp(/^([0-5][0-9])$/).test(normalizedValue)) {
+            normalizedValue = '59';
+        }
     }
     return normalizedValue;
 }
