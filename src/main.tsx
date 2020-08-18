@@ -4,27 +4,35 @@ import { CountdownStatus } from './countdown_status';
 import { PageFooter } from './page_footer/page_footer';
 import { ProgressCircle } from './progress_circle/progress_circle';
 
-const originalMinutes = new DataSource("00");
-const originalSeconds = new DataSource("00");
+const originalMinutes = new DataSource('00');
+const originalSeconds = new DataSource('00');
 const countDownStatus = new DataSource(CountdownStatus.STOPPED);
 
 let cancellationToken: CancellationToken;
 
 function renderInputs(): DataSource<Renderable> {
-    return countDownStatus.map(status =>
+    return countDownStatus.map((status) =>
         status === CountdownStatus.STOPPED ? (
             <div class="inputs">
                 <input
                     type="text"
                     value={originalMinutes}
-                    onInput={e => handleMinutesChange((e.target as HTMLInputElement).value)}
+                    onInput={(e) =>
+                        handleMinutesChange(
+                            (e.target as HTMLInputElement).value
+                        )
+                    }
                     class="minutes-input"
                 />
                 <span class="input-unit">min</span>
                 <input
                     type="text"
                     value={originalSeconds}
-                    onInput={e => handleSecondsChange((e.target as HTMLInputElement).value)}
+                    onInput={(e) =>
+                        handleSecondsChange(
+                            (e.target as HTMLInputElement).value
+                        )
+                    }
                     class="seconds-input"
                 />
                 <span class="input-unit">s</span>
@@ -34,34 +42,46 @@ function renderInputs(): DataSource<Renderable> {
 }
 
 function renderStartButton(): DataSource<Renderable> {
-    return countDownStatus.map(status =>
-        status !== CountdownStatus.RUNNING
-            ? <button onClick={() => startCountdown()}
-                disabled={DataSource.fromMultipleSources([originalMinutes, originalSeconds])
+    return countDownStatus.map((status) =>
+        status !== CountdownStatus.RUNNING ? (
+            <button
+                onClick={() => startCountdown()}
+                disabled={DataSource.fromMultipleSources([
+                    originalMinutes,
+                    originalSeconds
+                ])
                     .map(() => computeOriginalSeconds() === 0)
-                    .withInitial(computeOriginalSeconds() === 0)}>
+                    .withInitial(computeOriginalSeconds() === 0)}
+            >
                 START
             </button>
-            : null
+        ) : null
     );
 }
 
 function renderStopButton(): DataSource<Renderable> {
-    return countDownStatus.map(status =>
-        status !== CountdownStatus.STOPPED ? <button onClick={() => stopCountdown()}>STOP</button> : null
+    return countDownStatus.map((status) =>
+        status !== CountdownStatus.STOPPED ? (
+            <button onClick={() => stopCountdown()}>STOP</button>
+        ) : null
     );
 }
 
 function renderCountdown(): DataSource<Renderable> {
-    return countDownStatus.map(status => status !== CountdownStatus.STOPPED ? (
-        <div>
-            {renderProgressCircle()}
-        </div>
-    ) : null);
+    return countDownStatus.map((status) =>
+        status !== CountdownStatus.STOPPED ? (
+            <div>{renderProgressCircle()}</div>
+        ) : null
+    );
 }
 
 function renderProgressCircle(): DataSource<Renderable> {
-    return <ProgressCircle totalTime={computeOriginalSeconds()} status={countDownStatus} />;
+    return (
+        <ProgressCircle
+            totalTime={computeOriginalSeconds()}
+            status={countDownStatus}
+        />
+    );
 }
 
 function renderFooter(): DataSource<Renderable> {

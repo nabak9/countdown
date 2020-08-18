@@ -3,12 +3,20 @@ import { CountdownStatus } from '../countdown_status';
 import { ProgressCircleProps } from './progress_circle_props';
 
 export function ProgressCircle(props: ProgressCircleProps): Renderable {
-
-    return <canvas width="250" height="250" onAttach={(canvasElement) => initCanvas(canvasElement)}></canvas>;
+    return (
+        <canvas
+            width="250"
+            height="250"
+            onAttach={(canvasElement) => initCanvas(canvasElement)}
+        ></canvas>
+    );
 
     function initCanvas(canvasElem: HTMLCanvasElement) {
         const cancellationToken: CancellationToken = new CancellationToken();
-        props.status.listen(status => status === CountdownStatus.STOPPED && cancellationToken.cancel());
+        props.status.listen(
+            (status) =>
+                status === CountdownStatus.STOPPED && cancellationToken.cancel()
+        );
 
         const context = canvasElem.getContext('2d');
         context.lineCap = 'round';
@@ -35,13 +43,24 @@ export function ProgressCircle(props: ProgressCircleProps): Renderable {
 
             const elapsedTime = time - startTime;
             const elapsedSeconds = elapsedTime / 1000;
-            const remainingSeconds = Math.max(props.totalTime - elapsedSeconds + 1, 0);
+            const remainingSeconds = Math.max(
+                props.totalTime - elapsedSeconds + 1,
+                0
+            );
 
-            const progressDegrees = Math.min(elapsedSeconds * degreesPerSecond, 360);
+            const progressDegrees = Math.min(
+                elapsedSeconds * degreesPerSecond,
+                360
+            );
             drawCircle(computeRadAngle(progressDegrees), '#6eeeee');
 
-            const minutes = `${Math.floor(remainingSeconds / 60)}`.padStart(2, "0");
-            const seconds = `${Math.floor(remainingSeconds - Math.floor(remainingSeconds / 60) * 60)}`.padStart(2, "0");
+            const minutes = `${Math.floor(remainingSeconds / 60)}`.padStart(
+                2,
+                '0'
+            );
+            const seconds = `${Math.floor(
+                remainingSeconds - Math.floor(remainingSeconds / 60) * 60
+            )}`.padStart(2, '0');
             drawProgressLabel(minutes, seconds);
 
             if (progressDegrees === 360) {
@@ -64,7 +83,7 @@ export function ProgressCircle(props: ProgressCircleProps): Renderable {
             context.lineWidth = lineWidth;
             context.stroke();
         }
-    };
+    }
 
     function computeRadAngle(degrees: number): number {
         return (Math.PI / 180) * (270 + degrees);
