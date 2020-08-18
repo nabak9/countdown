@@ -1,4 +1,11 @@
-import { Aurum, CancellationToken, DataSource, Renderable } from 'aurumjs';
+import {
+    Aurum,
+    CancellationToken,
+    DataSource,
+    Renderable,
+    Switch,
+    SwitchCase
+} from 'aurumjs';
 import '../scss/main.scss';
 import { CountdownStatus } from './countdown_status';
 import { PageFooter } from './page_footer/page_footer';
@@ -11,81 +18,59 @@ const countDownStatus = new DataSource(CountdownStatus.STOPPED);
 let cancellationToken: CancellationToken;
 
 function renderInputs(): DataSource<Renderable> {
-    return countDownStatus.map((status) =>
-        status === CountdownStatus.STOPPED ? (
-            <div class="inputs">
-                <input
-                    type="text"
-                    value={originalMinutes}
-                    onInput={(e) =>
-                        handleMinutesChange(
-                            (e.target as HTMLInputElement).value
-                        )
-                    }
-                    class="minutes-input"
-                />
-                <span class="input-unit">min</span>
-                <input
-                    type="text"
-                    value={originalSeconds}
-                    onInput={(e) =>
-                        handleSecondsChange(
-                            (e.target as HTMLInputElement).value
-                        )
-                    }
-                    class="seconds-input"
-                />
-                <span class="input-unit">s</span>
-            </div>
-        ) : null
+    return (
+        <div class="inputs">
+            <input
+                type="text"
+                value={originalMinutes}
+                onInput={(e) =>
+                    handleMinutesChange((e.target as HTMLInputElement).value)
+                }
+                class="minutes-input"
+            />
+            <span class="input-unit">min</span>
+            <input
+                type="text"
+                value={originalSeconds}
+                onInput={(e) =>
+                    handleSecondsChange((e.target as HTMLInputElement).value)
+                }
+                class="seconds-input"
+            />
+            <span class="input-unit">s</span>
+        </div>
     );
 }
 
 function renderStartButton(): DataSource<Renderable> {
-    return countDownStatus.map((status) =>
-        status !== CountdownStatus.RUNNING ? (
-            <button
-                onClick={() => startCountdown()}
-                disabled={DataSource.fromMultipleSources([
-                    originalMinutes,
-                    originalSeconds
-                ])
-                    .map(() => computeOriginalSeconds() === 0)
-                    .withInitial(computeOriginalSeconds() === 0)}
-            >
-                START
-            </button>
-        ) : null
+    return (
+        <button
+            onClick={() => startCountdown()}
+            disabled={DataSource.fromMultipleSources([
+                originalMinutes,
+                originalSeconds
+            ])
+                .map(() => computeOriginalSeconds() === 0)
+                .withInitial(computeOriginalSeconds() === 0)}
+        >
+            START
+        </button>
     );
 }
 
 function renderStopButton(): DataSource<Renderable> {
-    return countDownStatus.map((status) =>
-        status !== CountdownStatus.STOPPED ? (
-            <button onClick={() => stopCountdown()}>STOP</button>
-        ) : null
-    );
+    return <button onClick={() => stopCountdown()}>STOP</button>;
 }
 
-function renderCountdown(): DataSource<Renderable> {
-    return countDownStatus.map((status) =>
-        status !== CountdownStatus.STOPPED ? (
-            <div>{renderProgressCircle()}</div>
-        ) : null
-    );
-}
-
-function renderProgressCircle(): DataSource<Renderable> {
+function Countdown(): DataSource<Renderable> {
     return (
-        <ProgressCircle
-            totalTime={computeOriginalSeconds()}
-            status={countDownStatus}
-        />
+        <div>
+            <ProgressCircle
+                totalTime={computeOriginalSeconds()}
+                status={countDownStatus}
+            />
+        </div>
     );
-}
-
-function renderFooter(): DataSource<Renderable> {
-    return <PageFooter />;
 }
 
 function startCountdown() {
@@ -147,11 +132,17 @@ function normalizeMinutesOrSeconds(value: string): string {
 
 Aurum.attach(
     <div class="root">
-        {renderInputs()}
-        {renderStartButton()}
-        {renderCountdown()}
-        {renderStopButton()}
-        {renderFooter()}
+        <Switch state={countDownStatus}>
+            <SwitchCase when={CountdownStatus.STOPPED}>
+                {renderInputs()}
+                {renderStartButton()}
+            </SwitchCase>
+            <SwitchCase when={CountdownStatus.RUNNING}>
+                <Countdown></Countdown>
+                {renderStopButton()}
+            </SwitchCase>
+        </Switch>
+        <PageFooter />
     </div>,
     document.body
 );

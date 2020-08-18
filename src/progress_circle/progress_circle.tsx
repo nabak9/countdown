@@ -44,7 +44,7 @@ export function ProgressCircle(props: ProgressCircleProps): Renderable {
             const elapsedTime = time - startTime;
             const elapsedSeconds = elapsedTime / 1000;
             const remainingSeconds = Math.max(
-                props.totalTime - elapsedSeconds + 1,
+                props.totalTime - elapsedSeconds,
                 0
             );
 
@@ -58,7 +58,7 @@ export function ProgressCircle(props: ProgressCircleProps): Renderable {
                 2,
                 '0'
             );
-            const seconds = `${Math.floor(
+            const seconds = `${Math.ceil(
                 remainingSeconds - Math.floor(remainingSeconds / 60) * 60
             )}`.padStart(2, '0');
             drawProgressLabel(minutes, seconds);
